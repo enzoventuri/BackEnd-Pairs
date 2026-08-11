@@ -5,7 +5,9 @@ import com.example.backendpares.Enum.Types;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 public class Pokemon {
-    private long id;
+    static int generateId = 1;
+
+    private int id;
     private String name;
     private Enum<Types> type;
     private double health;
@@ -16,38 +18,25 @@ public class Pokemon {
     private boolean isDowned;
     private boolean isOnBench;
 
-    public Pokemon(String name, Enum<Types> type, double health,
-                   double attack, int level, int experience, Enum<Evolution> evolution, boolean isDowned, boolean isOnBench) {
+    public Pokemon(String name, String type, double health,
+                   double attack, int level, int experience, String evolution, boolean downed, boolean onBench) {
+        this.id = generateId++;
         this.name = name;
-        this.type = type;
+        this.type = Types.getTypeFromName(type);
         this.health = health;
         this.attack = attack;
         this.level = level;
         this.experience = experience;
-        this.evolution = evolution;
-        this.isDowned = isDowned;
-        this.isOnBench = isOnBench;
+        this.evolution = Evolution.getEvolutionFromName(evolution);
+        this.isDowned = downed;
+        this.isOnBench = onBench;
     }
 
-    public Pokemon(long id, String name, Enum<Types> type, double health,
-                   double attack, int level, int experience, Enum<Evolution> evolution, boolean isDowned, boolean isOnBench) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.health = health;
-        this.attack = attack;
-        this.level = level;
-        this.experience = experience;
-        this.evolution = evolution;
-        this.isDowned = isDowned;
-        this.isOnBench = isOnBench;
-    }
-
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -72,7 +61,9 @@ public class Pokemon {
     }
 
     public void setHealth(double health) {
-        this.health = health;
+
+
+        this.health += health;
     }
 
     public double getAttack() {
@@ -88,7 +79,7 @@ public class Pokemon {
     }
 
     public void setLevel(int level) {
-        this.level = level;
+        this.level += level;
     }
 
     public int getExperience() {
@@ -96,7 +87,17 @@ public class Pokemon {
     }
 
     public void setExperience(int experience) {
-        this.experience = experience;
+        if (this.experience + experience > 100) {
+            int result = 0;
+
+            this.level++;
+            result = this.experience + experience;
+            this.experience = result - 100;
+
+            return;
+        }
+
+        this.experience += experience;
     }
 
     public Enum<Evolution> getEvolution() {
